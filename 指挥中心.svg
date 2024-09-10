@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 指挥中心.svg 页-1 -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="0.984252in" height="1.26897in"
+		viewBox="0 0 70.8661 91.3661" xml:space="preserve" color-interpolation-filters="sRGB" class="st2">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#000000;stroke:#ffffff;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:0.6;stroke-width:1}
+		.st2 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<g v:mID="0" v:index="1" v:groupContext="foregroundPage">
+		<title>页-1</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="9"
+				v:shadowOffsetY="-9"/>
+		<g id="group1-1" transform="translate(0,-20)" v:mID="1" v:groupContext="group">
+			<v:custProps>
+				<v:cp v:nameU="ShapeClass" v:lbl="ShapeClass" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="true"
+						v:ask="false" v:langID="2052" v:cal="0" v:val="VT4(连接性)"/>
+				<v:cp v:nameU="ShapeType" v:lbl="ShapeType" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="true"
+						v:ask="false" v:langID="2052" v:cal="0" v:val="VT4(设备)"/>
+				<v:cp v:nameU="SubShapeType" v:lbl="SubShapeType" v:prompt="" v:type="0" v:format="" v:sortKey="" v:invis="true"
+						v:ask="false" v:langID="2052" v:cal="0" v:val="VT4(无线电发射塔)"/>
+			</v:custProps>
+			<v:userDefs>
+				<v:ud v:nameU="visVersion" v:prompt="" v:val="VT0(15):26"/>
+				<v:ud v:nameU="ShapeClass" v:prompt="" v:val="VT0(5):26"/>
+				<v:ud v:nameU="SolSH" v:prompt="" v:val="VT15({BF0433D9-CD73-4EB5-8390-8653BE590246}):41"/>
+				<v:ud v:nameU="visLegendShape" v:prompt="" v:val="VT0(2):26"/>
+			</v:userDefs>
+			<title>无线电发射塔</title>
+			<g id="shape2-2" v:mID="2" v:groupContext="shape" transform="translate(15.8831,0)">
+				<title>工作表.2</title>
+				<path d="M39.1 91.37 L19.44 38.74 L0 91.32 L2.99 91.34 L3.95 88.75 L19.44 80.02 L34.75 88.27 L35.89 91.34 L39.1 91.37
+							 ZM19.41 63.56 L28.27 71.74 L19.42 76.73 L10.67 71.91 L19.41 63.56 ZM12.22 66.45 L14.85 59.36 L17.29
+							 61.61 L12.22 66.45 ZM21.49 61.57 L23.97 59.21 L26.59 66.28 L21.49 61.57 ZM22.88 56.28 L19.38 59.62 L15.93
+							 56.45 L19.44 47 L22.88 56.28 ZM5.49 84.58 L9.27 74.42 L16.48 78.39 L5.49 84.58 ZM22.38 78.36 L29.57
+							 74.31 L33.3 84.37 L22.38 78.36 Z" class="st1"/>
+			</g>
+			<g id="shape3-4" v:mID="3" v:groupContext="shape" transform="translate(19.4581,-45.2479)">
+				<title>工作表.3</title>
+				<path d="M28.38 78.61 C28.38 83.05 26.09 86.96 22.62 89.24 L23.65 91.37 C27.9 88.7 30.74 83.98 30.74 78.61 C30.74
+							 78.59 30.74 78.57 30.74 78.56 C30.74 78.54 30.74 78.52 30.74 78.51 C30.74 73.13 27.9 68.42 23.65 65.75
+							 L22.62 67.87 C26.09 70.15 28.38 74.06 28.38 78.51 C28.38 78.52 28.38 78.54 28.38 78.55 L28.38 78.55
+							 C28.38 78.55 28.38 78.56 28.38 78.56 C28.38 78.56 28.38 78.56 28.38 78.56 L28.38 78.56 C28.38 78.58
+							 28.38 78.59 28.38 78.61 ZM20.4 73.74 C21.71 74.96 22.54 76.69 22.55 78.62 C22.54 80.55 21.71 82.29 20.4
+							 83.5 L21.42 85.72 C23.52 84.08 24.87 81.55 24.9 78.69 L24.9 78.69 C24.9 78.68 24.9 78.66 24.9 78.64
+							 C24.9 78.63 24.9 78.63 24.9 78.62 C24.9 78.62 24.9 78.61 24.9 78.61 C24.9 78.59 24.9 78.57 24.9 78.55
+							 L24.9 78.55 C24.87 75.7 23.52 73.17 21.42 71.53 L20.4 73.74 ZM2.36 78.61 C2.36 78.59 2.36 78.58 2.36
+							 78.56 L2.36 78.55 C2.36 78.54 2.36 78.52 2.36 78.51 C2.36 74.06 4.65 70.15 8.11 67.87 L7.08 65.75 C2.84
+							 68.42 0 73.13 0 78.51 C0 78.52 0 78.54 0 78.56 C0 78.57 0 78.59 0 78.61 C0 83.98 2.84 88.7 7.08 91.37
+							 L8.11 89.24 C4.65 86.96 2.36 83.05 2.36 78.61 ZM10.55 73.74 L9.52 71.53 C7.43 73.17 6.08 75.7 6.05 78.55
+							 L6.04 78.55 C6.04 78.57 6.04 78.59 6.04 78.61 C6.04 78.61 6.04 78.62 6.04 78.62 C6.04 78.63 6.04 78.63
+							 6.04 78.64 C6.04 78.66 6.04 78.68 6.04 78.69 L6.05 78.69 C6.08 81.55 7.43 84.08 9.52 85.72 L10.55 83.5
+							 C9.24 82.29 8.41 80.55 8.4 78.62 C8.4 76.69 9.24 74.96 10.55 73.74 ZM17.92 78.65 A2.39489 2.39489 -180
+							 1 0 13.13 78.65 A2.39489 2.39489 -180 1 0 17.92 78.65 Z" class="st1"/>
+			</g>
+		</g>
+	</g>
+</svg>

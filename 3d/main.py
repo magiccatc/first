@@ -1,3 +1,5 @@
+import copy
+import heapq
 import sys
 import warnings
 import numpy as np
@@ -15,7 +17,8 @@ from dialog import Ui_Dialog  # 确保这是由 Qt Designer 生成的 UI 类
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 plt.rcParams['font.sans-serif'] = ['SimHei']  # 使用黑体
-plt.rcParams['axes.unicode_minus'] = False    # 解决负号显示问题
+plt.rcParams['axes.unicode_minus'] = False  # 解决负号显示问题
+
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, parent=None):
@@ -81,7 +84,7 @@ class Dialog(QDialog, Ui_Dialog):
         elif control_type == "mesh指控（贪婪路由）":
             self.update_function = self.shortest_path_two_control
         elif control_type == "mesh指控（冗余路由）":
-            self.update_function = self.shortest_path_two_control()
+            self.update_function = self.shortest_path_two_control
         else:
             self.update_function = None
 
@@ -226,84 +229,142 @@ class Dialog(QDialog, Ui_Dialog):
 
     def shortest_path_two_control(self, frame):
         if self.graph is None:
-            self.graph = nx.Graph()
-            origin = np.array([[0, 0]])
-            points = np.vstack((origin, np.column_stack((self.data_x, self.data_y))))
-            for i, (x, y) in enumerate(points):
-                self.graph.add_node(i, pos=(x, y))
-
-            for i in range(len(points)):
-                for j in range(i + 1, len(points)):
-                    distance = np.linalg.norm(points[i] - points[j])
-                    if distance <= self.max_distance:
-                        self.graph.add_edge(i, j, weight=distance)
-
-            distances = np.linalg.norm(points[1:] - origin, axis=1)
-            self.farthest_indices = np.argsort(distances)[-5:][::-1]
-
-            self.shortest_paths = []
-            self.alternate_paths = []
-
-            for idx in self.farthest_indices:
-                try:
-                    shortest_path = nx.shortest_path(self.graph, source=0, target=idx + 1, weight='weight')
-                    self.shortest_paths.append(shortest_path)
-
-                    # 查找所有从原点到目标点的路径
-                    all_paths = list(nx.all_simple_paths(self.graph, source=0, target=idx + 1))
-
-                    # 计算最短路径的节点集合
-                    shortest_path_set = set(shortest_path[1:-1])
-
-                    # 从所有路径中选择与最短路径尽可能不重合且总长度最短的路径
-                    min_length = float('inf')
-                    best_alternate_path = None
-
-                    for path in all_paths:
-                        if not any(node in path for node in shortest_path_set):
-                            path_length = sum(self.graph[u][v]['weight'] for u, v in zip(path[:-1], path[1:]))
-                            if path_length < min_length:
-                                min_length = path_length
-                                best_alternate_path = path
-
-                    if best_alternate_path:
-                        self.alternate_paths.append(best_alternate_path)
-                    else:
-                        self.alternate_paths.append([])
-
-                except nx.NetworkXNoPath:
-                    print(f"没有从原点到节点 {idx + 1} 的路径")
+            self._initialize_graph()
+            self._calculate_farthest_indices()
 
         self.ax.clear()
-        self.ax.scatter(self.data_x, self.data_y, color='blue', label='随机点')
-        self.ax.scatter(0, 0, color='red', label='原点')
+        self._plot_points()
 
         if frame < len(self.shortest_paths):
-            shortest_path = self.shortest_paths[frame]
-            alternate_path = self.alternate_paths[frame]
-
-            # 绘制最短路径
-            for i in range(len(shortest_path) - 1):
-                x_coords = [self.graph.nodes[shortest_path[i]]['pos'][0],
-                            self.graph.nodes[shortest_path[i + 1]]['pos'][0]]
-                y_coords = [self.graph.nodes[shortest_path[i]]['pos'][1],
-                            self.graph.nodes[shortest_path[i + 1]]['pos'][1]]
-                self.ax.plot(x_coords, y_coords, 'g-', linewidth=2, label='最短路径' if i == 0 else "")
-
-            # 绘制替代路径
-            if alternate_path:
-                for i in range(len(alternate_path) - 1):
-                    x_coords = [self.graph.nodes[alternate_path[i]]['pos'][0],
-                                self.graph.nodes[alternate_path[i + 1]]['pos'][0]]
-                    y_coords = [self.graph.nodes[alternate_path[i]]['pos'][1],
-                                self.graph.nodes[alternate_path[i + 1]]['pos'][1]]
-                    self.ax.plot(x_coords, y_coords, 'b--', linewidth=2, label='替代路径' if i == 0 else "")
+            self._plot_paths(frame)
 
         self.ax.set_title(f"最短路径与替代路径指控动画 - 帧 {frame + 1}")
         self.ax.set_xlim(0, 100)
         self.ax.set_ylim(0, 100)
         self.ax.legend()
         self.canvas.draw()
+
+    def _initialize_graph(self):
+        self.graph = nx.Graph()
+        origin = np.array([[0, 0]])
+        points = np.vstack((origin, np.column_stack((self.data_x, self.data_y))))
+
+        for i, (x, y) in enumerate(points):
+            self.graph.add_node(i, pos=(x, y))
+
+        edges = [(i, j, np.linalg.norm(points[i] - points[j]))
+                 for i in range(len(points)) for j in range(i + 1, len(points))
+                 if np.linalg.norm(points[i] - points[j]) <= self.max_distance]
+
+        self.graph.add_weighted_edges_from(edges)
+
+    def _calculate_farthest_indices(self):
+        origin = np.array([[0, 0]])
+        points = np.vstack((origin, np.column_stack((self.data_x, self.data_y))))
+
+        distances = np.linalg.norm(points[1:] - origin, axis=1)
+        self.farthest_indices = np.argsort(distances)[-5:][::-1]
+
+        self.shortest_paths = []
+        self.alternate_paths = []
+
+        distances_array1 = []
+        self.distance_array1 = distances_array1
+        # 遍历每个路径
+        for path in self.shortest_paths:
+            # 初始化路径上的节点对
+            path_distances = []
+            # 遍历路径中的每对相邻节点
+            for i in range(len(path) - 1):
+                node1, node2 = path[i], path[i + 1]
+                # 计算欧几里得距离
+                distance = np.linalg.norm(points[node2] - points[node1])
+                # 将距离和节点对存储在路径距离列表中
+                path_distances.append(distance)
+            # 将路径上的所有节点对距离存储在二维数组中
+            distances_array1.append(path_distances)
+
+
+        for idx in self.farthest_indices:
+            self._find_paths(idx)
+        distances_array1 = []
+        self.distance_array1 = distances_array1
+        # 遍历每个路径
+        for path in self.shortest_paths:
+            # 初始化路径上的节点对
+            path_distances = []
+            # 遍历路径中的每对相邻节点
+            for i in range(len(path) - 1):
+                node1, node2 = path[i], path[i + 1]
+                # 计算欧几里得距离
+                distance = np.linalg.norm(points[node2] - points[node1])
+                # 将距离和节点对存储在路径距离列表中
+                path_distances.append(distance)
+            # 将路径上的所有节点对距离存储在二维数组中
+            distances_array1.append(path_distances)
+            print(
+                distances_array1
+            )
+
+    def _find_paths(self, idx):
+        try:
+            shortest_path = nx.shortest_path(self.graph, source=0, target=idx + 1, weight='weight')
+            self.shortest_paths.append(shortest_path)
+            print(f"节点 {idx + 1} 的最短路径为: {shortest_path}")
+            alternate_paths = self._find_alternate_paths(0, idx + 1, shortest_path)
+            self.alternate_paths.append(alternate_paths)
+            print(f"节点 {idx + 1} 的替代路径为: {alternate_paths}")
+        except nx.NetworkXNoPath:
+            print(f"没有从原点到节点 {idx + 1} 的路径")
+
+    def _find_alternate_paths(self, source, target, shortest_path):
+        def path_weight(path):
+            return sum(self.graph[u][v]['weight'] for u, v in zip(path[:-1], path[1:]))
+
+        alternate_paths = []
+
+        # 创建图的副本以进行修改
+        print("base graph number", self.graph)
+        graph_copy = copy.deepcopy(self.graph)
+        print("copy graph number", graph_copy)
+        # 遍历最短路径中的每一条边，逐步移除它们
+        for i in range(len(shortest_path) - 1):
+            u, v = shortest_path[i], shortest_path[i + 1]
+
+            # 从副本中移除当前边
+            graph_copy.remove_edge(u, v)
+            print(" new graph copy number", graph_copy)
+            # 尝试找到新的最短路径
+
+            new_path = nx.shortest_path(graph_copy, source=source, target=target, weight='weight')
+
+            # 将边重新添加回图的副本
+        graph_copy.add_edge(u, v, weight=self.graph[u][v]['weight'])
+
+        return new_path
+
+    def _plot_points(self):
+        self.ax.scatter(self.data_x, self.data_y, color='blue', label='随机点')
+        self.ax.scatter(0, 0, color='red', label='原点')
+
+    def _plot_paths(self, frame):
+        shortest_path = self.shortest_paths[frame]
+        alternate_path = self.alternate_paths[frame]
+
+        for i in range(len(shortest_path) - 1):
+            x_coords = [self.graph.nodes[shortest_path[i]]['pos'][0],
+                        self.graph.nodes[shortest_path[i + 1]]['pos'][0]]
+            y_coords = [self.graph.nodes[shortest_path[i]]['pos'][1],
+                        self.graph.nodes[shortest_path[i + 1]]['pos'][1]]
+            self.ax.plot(x_coords, y_coords, 'g-', linewidth=2, label='最短路径' if i == 0 else "")
+
+        if alternate_path:
+            for i in range(len(alternate_path) - 1):
+                x_coords = [self.graph.nodes[alternate_path[i]]['pos'][0],
+                            self.graph.nodes[alternate_path[i + 1]]['pos'][0]]
+                y_coords = [self.graph.nodes[alternate_path[i]]['pos'][1],
+                            self.graph.nodes[alternate_path[i + 1]]['pos'][1]]
+                self.ax.plot(x_coords, y_coords, 'b--', linewidth=2, label='替代路径' if i == 0 else "")
 
     def update_animation(self, frame):
         if self.update_function:
@@ -328,6 +389,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.ax.legend()
         self.canvas.draw()
         return []
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
