@@ -20,8 +20,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.scene = QGraphicsScene()
         self.scene.addWidget(self.canvas)
         self.graphicsView.setScene(self.scene)
-
-        self.ax = self.fig.add_subplot(111)
+        self.setStyleSheet("background-color: lightblue;")
+        #self.ax = self.fig.add_subplot(111)
         self.data_x = np.array([])
         self.data_y = np.array([])
         self.farthest_lines = []  # 用于存储动画中的线对象
